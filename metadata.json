@@ -1,5 +1,5 @@
 {
-  "name": "Synthesis Simulation Control Panel",
+  "name": "Driftwatch",
   "description": "A high-fidelity multi-agent reasoning visualization and benchmarking dashboard featuring Agent Herald as host.",
   "requestFramePermissions": []
 }

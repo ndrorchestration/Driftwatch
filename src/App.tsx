@@ -1190,6 +1190,16 @@ export default function App() {
             </div>
           </div>
         </div>
+
+        {/* Provenance Watermark */}
+        <div className="px-6 py-2 text-[9px] font-mono opacity-30 leading-relaxed shrink-0 pointer-events-none select-none">
+          <div className="font-bold text-[#4db8ff] mb-1 uppercase tracking-widest opacity-80">## Provenance</div>
+          <div>Author: Andrew Hensel</div>
+          <div>Project: Driftwatch / Driftward</div>
+          <div>Repo: github.com/Flickerflash/Driftwatch</div>
+          <div>License: Apache-2.0</div>
+          <div>Built: April 2026</div>
+        </div>
       </div>
     </div>
 
