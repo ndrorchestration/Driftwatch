@@ -17,7 +17,7 @@ Driftwatch tracks when AI agent outputs begin diverging from certified baselines
 
 - **Real-time drift detection** — continuous state observation against certified baselines
 - **Truth scoring** — probabilistic confidence scoring per agent output
-- **Phi-harmonic state monitoring** — modal frequency analysis anchored to Pentagon ecosystem ratios
+- **Phi-harmonic state monitoring** — modal frequency analysis anchored to Phi-Harmonic Dynamic Governance Ecosystem (PHDGE) ratios
 - **Multi-agent synthesis simulation** — simulate N-agent chains and observe convergence/divergence
 - **Drift trajectory visualization** — feeds into [3d-visualization-hub](https://github.com/ndrorchestration/3d-visualization-hub) for 3D manifold rendering
 
@@ -30,7 +30,7 @@ Agent Output Stream
        ↓
   Baseline Comparison  ←  Certified reference (Gold Star Standards)
        ↓
-  Phi-Harmonic Gate    ←  Pentagon ratio validation (Professor Prodigy)
+  Phi-Harmonic Gate    ←  PHDGE ratio validation (Professor Prodigy)
        ↓
   Drift Score          ←  0.0 (stable) → 1.0 (critical drift)
        ↓
@@ -68,5 +68,5 @@ Apache License 2.0 — see [LICENSE](LICENSE) for details.
 
 ## Provenance
 
-Developed by [Ndr “Ender” Hensel](https://github.com/ndrorchestration) — AI Orchestration Engineer & Systems Architect, Columbus OH.  
+Developed by [Ndr "Ender" Hensel](https://github.com/ndrorchestration) — AI Orchestration Engineer & Systems Architect, Columbus OH.  
 [LinkedIn](https://www.linkedin.com/in/andrewhensel) · [GitHub](https://github.com/ndrorchestration)
