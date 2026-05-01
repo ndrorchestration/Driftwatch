@@ -1,6 +1,6 @@
 # Contributing
 
-> **Governance:** DGAF / Agent Herald — All changes to this repository are subject to Sentinel CI/CD integrity enforcement. Contributions must pass governance checks before merge. See [DGAF-Framework](https://github.com/Flickerflash/DGAF-Framework) for spine documentation.
+> **Governance:** DGAF / Agent Herald — All changes to this repository are subject to Sentinel CI/CD integrity enforcement. Contributions must pass governance checks before merge. See [DGAF-Framework](https://github.com/ndrorchestration/DGAF-Framework) for spine documentation.
 
 ## Scope
 This repository contains the Driftwatch drift detection dashboard and Agent Herald host interface specification.
