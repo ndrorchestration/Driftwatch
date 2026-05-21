@@ -13,6 +13,17 @@ Driftwatch tracks when AI agent outputs begin diverging from certified baselines
 
 ---
 
+## Formal Substrate
+
+Driftwatch's drift scoring is grounded in the **Phi-Calculus Architecture** formal model.
+
+- **Drift functional Δ: T → R≥0** — the formal definition underpinning Driftwatch's drift scores is specified in the [Phi-Calculus Architecture: Definitions, Theorem, Proof](https://github.com/ndrorchestration/DGAF-Framework/blob/main/docs/phi-calculus-architecture/DEFINITIONS_THEOREM_PROOF.md) canonical doc in DGAF-Framework.
+- **Theta threshold (θ = 0.009)** — the Phi-Compliance region bound, calibrated to the OST-50 Platinum baseline (99.1% integrity retention).
+- **Tarski-Governed Phi-Compliance** — Theorem 1 proves that the Layer 0 governance operator converges to `lfp(F)` in at most `|C|` iterations, providing the convergence guarantee for Driftwatch's truth-scoring loop.
+- **Amethyst-Lattice-v3.1 mapping** — the formal correspondence between Driftwatch's convergence/divergence monitoring and the Phi-Calculus fixed-point substrate is documented in Section 5 of the spec.
+
+---
+
 ## Core Capabilities
 
 - **Real-time drift detection** — continuous state observation against certified baselines
@@ -32,11 +43,13 @@ Agent Output Stream
        ↓
   Phi-Harmonic Gate    ←  PHDGE ratio validation (Professor Prodigy)
        ↓
-  Drift Score          ←  0.0 (stable) → 1.0 (critical drift)
+  Drift Score Δ(τ)     ←  0.0 (stable) → 1.0 (critical drift) | θ = 0.009
        ↓
   Truth Score          ←  Confidence-weighted output validity
        ↓
   MDAR Trigger         →  Monitor → Detect → Assess → Respond
+       ↓
+  Compliance Decision  ←  ACCEPT / REVISE / ESCALATE / REJECT
 ```
 
 ---
@@ -55,6 +68,7 @@ npm run dev
 ## Related Ecosystem
 
 - [DGAF-Framework](https://github.com/ndrorchestration/DGAF-Framework) — governance spine
+- [Phi-Calculus Architecture Formal Spec](https://github.com/ndrorchestration/DGAF-Framework/blob/main/docs/phi-calculus-architecture/DEFINITIONS_THEOREM_PROOF.md) — formal substrate for drift functional and compliance region
 - [junior-apogee-app](https://github.com/ndrorchestration/junior-apogee-app) — primary agent evaluation platform (Driftwatch monitors its outputs)
 - [3d-visualization-hub](https://github.com/ndrorchestration/3d-visualization-hub) — renders Driftwatch drift trajectories in 3D
 - [Amethyst-Governance-Eval-Stack](https://github.com/ndrorchestration/Amethyst-Governance-Eval-Stack) — MDAR protocol layer that responds to Driftwatch alerts
