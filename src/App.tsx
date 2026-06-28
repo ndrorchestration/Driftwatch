@@ -186,7 +186,7 @@ export default function App() {
     }, 2000);
     return () => clearInterval(interval);
   }, [workerConfigs]);
-  const [chatMessages, setChatMessages] = useState<Array<{ role: 'user' | 'herald', content: string, isThinking?: boolean }}>([
+  const [chatMessages, setChatMessages] = useState<Array<{ role: 'user' | 'herald', content: string, isThinking?: boolean }>>([ 
     { role: 'herald', content: 'Greetings. I am Agent Herald, your host for this synthesis. How shall we navigate the neural void today?' }
   ]);
   const [userInput, setUserInput] = useState('');
