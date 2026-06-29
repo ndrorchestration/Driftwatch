@@ -6,7 +6,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass.js';
 import { gsap } from 'gsap';
-import { Activity, Shield, Zap, Info, Activity as ActivityIcon, MessageSquare, Send, User, Bot, Sparkles } from 'lucide-react';
+import { Activity, Shield, Zap, Info, Activity as ActivityIcon, Send, Bot, Sparkles } from 'lucide-react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 declare global {
@@ -15,6 +15,14 @@ declare global {
       readonly VITE_GEMINI_API_KEY: string;
     };
   }
+}
+
+// Patch 1: Extract interface so esbuild does not misparse `?:` inside an
+// inline generic type argument as a ternary operator (esbuild 0.21 / Vite 6).
+interface ChatMessage {
+  role: 'user' | 'herald';
+  content: string;
+  isThinking?: boolean;
 }
 
 // Theme Color: Medium Light Blue
@@ -34,7 +42,7 @@ class SchizophonicTrio {
   droneFilter: BiquadFilterNode;
   
   // Generator (Amethyst) - Noise
-  noiseNode: AudioWorkletNode | ScriptProcessorNode;
+  // Note: noiseNode was declared but never assigned; removed to satisfy TS strict.
   noiseFilter: BiquadFilterNode;
   noiseGain: GainNode;
   analyser: AnalyserNode;
@@ -69,7 +77,7 @@ class SchizophonicTrio {
     });
 
     // --- Generator (Amethyst) ---
-    // Simple noise generation
+    // Simple noise generation via BufferSource (no AudioWorklet needed)
     const bufferSize = 2 * this.ctx.sampleRate;
     const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const output = noiseBuffer.getChannelData(0);
@@ -186,8 +194,14 @@ export default function App() {
     }, 2000);
     return () => clearInterval(interval);
   }, [workerConfigs]);
-  const [chatMessages, setChatMessages] = useState<Array<{ role: 'user' | 'herald', content: string, isThinking?: boolean }>>([ 
-    { role: 'herald', content: 'Greetings. I am Agent Herald, your host for this synthesis. How shall we navigate the neural void today?' }
+
+  // Patch 1 applied: ChatMessage interface extracted above; `useState<ChatMessage[]>`
+  // replaces the inline generic that caused esbuild 189:111 parse failure.
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
+    {
+      role: 'herald',
+      content: 'Greetings. I am Agent Herald, your host for this synthesis. How shall we navigate the neural void today?',
+    },
   ]);
   const [userInput, setUserInput] = useState('');
   const [isHeraldThinking, setIsHeraldThinking] = useState(false);
