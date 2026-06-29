@@ -209,11 +209,13 @@ export default function App() {
   const audioEngineRef = useRef<SchizophonicTrio | null>(null);
   const analyzerCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  const stateRef = useRef({ consensus, spread, truth, info, latency, workerConfigs, selectedAgentIndex });
+  // FIX #2: dissonanceCount added to stateRef so animate() loop reads current value
+  // (was stale closure — shield.visible always saw 0)
+  const stateRef = useRef({ consensus, spread, truth, info, latency, workerConfigs, selectedAgentIndex, dissonanceCount });
 
   useEffect(() => {
-    stateRef.current = { consensus, spread, truth, info, latency, workerConfigs, selectedAgentIndex };
-  }, [consensus, spread, truth, info, latency, workerConfigs, selectedAgentIndex]);
+    stateRef.current = { consensus, spread, truth, info, latency, workerConfigs, selectedAgentIndex, dissonanceCount };
+  }, [consensus, spread, truth, info, latency, workerConfigs, selectedAgentIndex, dissonanceCount]);
 
   const handleHeraldChat = async () => {
     if (!userInput.trim() || isHeraldThinking) return;
@@ -578,6 +580,7 @@ export default function App() {
     renderer.domElement.addEventListener('click', handleCanvasClick);
     renderer.domElement.tabIndex = 0;
     renderer.domElement.style.outline = 'none';
+    // FIX #7: pointer-events-none removed from containerRef div; canvas gets 'auto' directly
     renderer.domElement.style.pointerEvents = 'auto';
     renderer.domElement.style.position = 'absolute';
     renderer.domElement.style.top = '0';
@@ -590,10 +593,14 @@ export default function App() {
     const clock = new THREE.Clock();
     let animationId: number;
 
+    // FIX #5: Reusable scratch Vector3 to avoid per-frame GC allocations (900/sec)
+    const _scratchVec = new THREE.Vector3();
+
     const animate = () => {
       animationId = requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
-      const { consensus, spread, truth, info, latency, workerConfigs, selectedAgentIndex } = stateRef.current;
+      // FIX #2: dissonanceCount now read from stateRef (not stale closure)
+      const { consensus, spread, truth, info, latency, workerConfigs, selectedAgentIndex, dissonanceCount } = stateRef.current;
 
       tracer.userData.t += 0.01 + (consensus * 0.05);
       const tt = tracer.userData.t;
@@ -646,7 +653,8 @@ export default function App() {
         const targetY = Math.sin(t * dynamicSpeed + config.floatOffset) * (1.0 - consensus * 0.7) * 2;
 
         const lerpFactor = 0.1 * Math.max(0.2, config.speed);
-        w.position.lerp(new THREE.Vector3(targetX, targetY, targetZ), lerpFactor);
+        // FIX #5: reuse scratch vector instead of `new THREE.Vector3()` per frame per worker
+        w.position.lerp(_scratchVec.set(targetX, targetY, targetZ), lerpFactor);
         
         const now = t;
         const isDissonant = (now - data.lastDissonance) < 1.0;
@@ -864,6 +872,7 @@ export default function App() {
       sentinel.material.color.setHSL(hue, 0.8, 0.5);
       sentinel.material.emissive.setHSL(hue, 0.8, 0.5);
       
+      // FIX #2: dissonanceCount now live from stateRef (shield was always invisible)
       shield.visible = dissonanceCount > 0 && (t % 2 < 0.1);
       if (shield.visible) {
         shieldMat.opacity = Math.sin(t * 10) * 0.2;
@@ -923,117 +932,123 @@ export default function App() {
 
   return (
     <div className="relative w-full h-screen bg-[#00050a] text-[#4db8ff] font-sans overflow-hidden">
-      <div ref={containerRef} className="absolute inset-0 z-0 w-full h-full pointer-events-none" />
+      {/* FIX #7: removed pointer-events-none — was fighting renderer.domElement inline style */}
+      <div ref={containerRef} className="absolute inset-0 z-0 w-full h-full" />
 
+      {/* Left Panel */}
       <div className="absolute top-8 left-8 z-20 w-96 max-h-[calc(100vh-4rem)] flex flex-col gap-4 pointer-events-none pr-2">
         <div className="flex flex-col gap-4 overflow-y-auto custom-scrollbar pointer-events-auto pr-2 pb-8">
+
+          {/* Agent Herald Chat */}
           <div className="p-6 hud-glass flex flex-col h-[400px] shrink-0">
-          <div className="flex items-center gap-3 mb-6 border-b border-[#4db8ff]/10 pb-4">
-            <div className="p-2 bg-[#4db8ff]/10 rounded-lg">
-              <Bot className="w-5 h-5 text-[#4db8ff]" />
+            <div className="flex items-center gap-3 mb-6 border-b border-[#4db8ff]/10 pb-4">
+              <div className="p-2 bg-[#4db8ff]/10 rounded-lg">
+                <Bot className="w-5 h-5 text-[#4db8ff]" />
+              </div>
+              <div>
+                <h2 className="text-sm font-black tracking-widest uppercase">Agent Herald</h2>
+                <p className="text-[9px] font-mono opacity-50 uppercase tracking-tighter">System Host / Interface</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-sm font-black tracking-widest uppercase">Agent Herald</h2>
-              <p className="text-[9px] font-mono opacity-50 uppercase tracking-tighter">System Host / Interface</p>
-            </div>
-          </div>
 
-          <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
-            {chatMessages.map((msg, i) => (
-              <div key={i} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                <div className={`max-w-[85%] p-3 rounded-xl text-[11px] leading-relaxed ${
-                  msg.role === 'user' 
-                    ? 'bg-[#4db8ff]/10 border border-[#4db8ff]/20 text-[#4db8ff]' 
-                    : 'bg-[#ffffff]/5 border border-[#ffffff]/10 text-white/80'
-                }`}>
-                  {msg.content}
+            <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+              {chatMessages.map((msg, i) => (
+                <div key={i} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                  <div className={`max-w-[85%] p-3 rounded-xl text-[11px] leading-relaxed ${
+                    msg.role === 'user' 
+                      ? 'bg-[#4db8ff]/10 border border-[#4db8ff]/20 text-[#4db8ff]' 
+                      : 'bg-[#ffffff]/5 border border-[#ffffff]/10 text-white/80'
+                  }`}>
+                    {msg.content}
+                  </div>
                 </div>
-              </div>
-            ))}
-            {isHeraldThinking && (
-              <div className="flex items-center gap-2 text-[10px] text-[#4db8ff] animate-pulse">
-                <Sparkles className="w-3 h-3" />
-                <span>Herald is synthesizing...</span>
-              </div>
-            )}
-          </div>
-
-          <div className="mt-4 flex gap-2">
-            <input 
-              type="text" 
-              value={userInput}
-              onChange={(e) => { setUserInput(e.target.value); audioEngineRef.current?.resume(); }}
-              onKeyDown={(e) => e.key === 'Enter' && handleHeraldChat()}
-              placeholder="Communicate with Herald..."
-              className="flex-1 bg-[#ffffff]/5 border border-[#ffffff]/10 rounded-lg px-4 py-2 text-[11px] focus:outline-none focus:border-[#4db8ff]/40 transition-all"
-            />
-            <button 
-              onClick={handleHeraldChat}
-              disabled={isHeraldThinking}
-              className="p-2 bg-[#4db8ff]/10 border border-[#4db8ff]/20 rounded-lg hover:bg-[#4db8ff]/20 transition-all disabled:opacity-50"
-            >
-              <Send className="w-4 h-4 text-[#4db8ff]" />
-            </button>
-          </div>
-        </div>
-
-        <div className="p-6 hud-glass shrink-0">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-[#4db8ff]/10 rounded-lg">
-              <Activity className="w-5 h-5" />
-            </div>
-            <h1 className="text-sm font-black tracking-widest uppercase">Synthesis Simulation Control Panel</h1>
-          </div>
-
-          <div className="space-y-6">
-            {[{label:'Consensus',val:(consensus*100).toFixed(0)+'%',min:0,max:1,step:0.01,value:consensus,onChange:(v:number)=>setConsensus(v)},
-              {label:'Reasoning Spread',val:spread.toFixed(2),min:0,max:4,step:0.1,value:spread,onChange:(v:number)=>setSpread(v)},
-              {label:'Truth Score',val:truth.toFixed(2),min:0,max:1,step:0.01,value:truth,onChange:(v:number)=>setTruth(v)},
-              {label:'Info Density',val:(info*100).toFixed(0)+'%',min:0,max:1,step:0.01,value:info,onChange:(v:number)=>setInfo(v)},
-              {label:'Latency Simulation',val:latency+'ms',min:50,max:1000,step:10,value:latency,onChange:(v:number)=>setLatency(v)}
-            ].map(({label,val,min,max,step,value,onChange}) => (
-              <div key={label} className="space-y-3">
-                <div className="flex justify-between text-[10px] font-bold tracking-tighter uppercase opacity-60">
-                  <span>{label}</span><span>{val}</span>
+              ))}
+              {isHeraldThinking && (
+                <div className="flex items-center gap-2 text-[10px] text-[#4db8ff] animate-pulse">
+                  <Sparkles className="w-3 h-3" />
+                  <span>Herald is synthesizing...</span>
                 </div>
-                <input type="range" min={min} max={max} step={step} value={value}
-                  onChange={(e) => { onChange(parseFloat(e.target.value)); audioEngineRef.current?.resume(); }}
-                  className="w-full h-1 bg-[#4db8ff]/20 rounded-full appearance-none cursor-pointer accent-[#4db8ff]"
-                />
-              </div>
-            ))}
+              )}
+            </div>
 
-            <button 
-              onClick={() => { triggerBreakthrough(); audioEngineRef.current?.resume(); }}
-              disabled={isBreakthrough}
-              className="w-full py-3 bg-transparent border border-[#4db8ff] text-[#4db8ff] text-[10px] font-bold tracking-[0.2em] uppercase rounded-lg hover:bg-[#4db8ff] hover:text-[#00050a] transition-all duration-300 disabled:opacity-50"
-            >
-              {isBreakthrough ? 'Converging...' : 'Initialize Breakthrough'}
-            </button>
-          </div>
-
-          <div className="mt-8 pt-6 border-t border-[#4db8ff]/10">
-            <div className="flex items-center gap-2 text-[9px] font-mono opacity-50">
-              <div className="w-1 h-1 bg-[#4db8ff] rounded-full animate-pulse" />
-              <span>{isBreakthrough ? 'BREAKTHROUGH: CONVERGENCE IN PROGRESS' : 'SENTINEL ACTIVE: MONITORING WORKER NODES'}</span>
+            <div className="mt-4 flex gap-2">
+              <input 
+                type="text" 
+                value={userInput}
+                onChange={(e) => { setUserInput(e.target.value); audioEngineRef.current?.resume(); }}
+                onKeyDown={(e) => e.key === 'Enter' && handleHeraldChat()}
+                placeholder="Communicate with Herald..."
+                className="flex-1 bg-[#ffffff]/5 border border-[#ffffff]/10 rounded-lg px-4 py-2 text-[11px] focus:outline-none focus:border-[#4db8ff]/40 transition-all"
+              />
+              <button 
+                onClick={handleHeraldChat}
+                disabled={isHeraldThinking}
+                className="p-2 bg-[#4db8ff]/10 border border-[#4db8ff]/20 rounded-lg hover:bg-[#4db8ff]/20 transition-all disabled:opacity-50"
+              >
+                <Send className="w-4 h-4 text-[#4db8ff]" />
+              </button>
             </div>
           </div>
-        </div>
 
-        {/* Provenance Watermark */}
-        <div className="px-6 py-2 text-[9px] font-mono opacity-30 leading-relaxed shrink-0 pointer-events-none select-none">
-          <div className="font-bold text-[#4db8ff] mb-1 uppercase tracking-widest opacity-80">## Provenance</div>
-          <div>Author: Andrew Hensel</div>
-          <div>Project: Driftwatch / Driftward</div>
-          <div>Repo: github.com/ndrorchestration/Driftwatch</div>
-          <div>License: Apache-2.0</div>
-          <div>Built: April 2026</div>
-        </div>
-      </div>
-    </div>
+          {/* Control Panel */}
+          <div className="p-6 hud-glass shrink-0">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-[#4db8ff]/10 rounded-lg">
+                <Activity className="w-5 h-5" />
+              </div>
+              <h1 className="text-sm font-black tracking-widest uppercase">Synthesis Simulation Control Panel</h1>
+            </div>
 
-    {/* Agent Inspector Panel */}
-    <div className="absolute bottom-8 right-8 z-20 w-80 p-6 hud-glass pointer-events-auto">
+            <div className="space-y-6">
+              {[{label:'Consensus',val:(consensus*100).toFixed(0)+'%',min:0,max:1,step:0.01,value:consensus,onChange:(v:number)=>setConsensus(v)},
+                {label:'Reasoning Spread',val:spread.toFixed(2),min:0,max:4,step:0.1,value:spread,onChange:(v:number)=>setSpread(v)},
+                {label:'Truth Score',val:truth.toFixed(2),min:0,max:1,step:0.01,value:truth,onChange:(v:number)=>setTruth(v)},
+                {label:'Info Density',val:(info*100).toFixed(0)+'%',min:0,max:1,step:0.01,value:info,onChange:(v:number)=>setInfo(v)},
+                {label:'Latency Simulation',val:latency+'ms',min:50,max:1000,step:10,value:latency,onChange:(v:number)=>setLatency(v)}
+              ].map(({label,val,min,max,step,value,onChange}) => (
+                <div key={label} className="space-y-3">
+                  <div className="flex justify-between text-[10px] font-bold tracking-tighter uppercase opacity-60">
+                    <span>{label}</span><span>{val}</span>
+                  </div>
+                  <input type="range" min={min} max={max} step={step} value={value}
+                    onChange={(e) => { onChange(parseFloat(e.target.value)); audioEngineRef.current?.resume(); }}
+                    className="w-full h-1 bg-[#4db8ff]/20 rounded-full appearance-none cursor-pointer accent-[#4db8ff]"
+                  />
+                </div>
+              ))}
+
+              <button 
+                onClick={() => { triggerBreakthrough(); audioEngineRef.current?.resume(); }}
+                disabled={isBreakthrough}
+                className="w-full py-3 bg-transparent border border-[#4db8ff] text-[#4db8ff] text-[10px] font-bold tracking-[0.2em] uppercase rounded-lg hover:bg-[#4db8ff] hover:text-[#00050a] transition-all duration-300 disabled:opacity-50"
+              >
+                {isBreakthrough ? 'Converging...' : 'Initialize Breakthrough'}
+              </button>
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-[#4db8ff]/10">
+              <div className="flex items-center gap-2 text-[9px] font-mono opacity-50">
+                <div className="w-1 h-1 bg-[#4db8ff] rounded-full animate-pulse" />
+                <span>{isBreakthrough ? 'BREAKTHROUGH: CONVERGENCE IN PROGRESS' : 'SENTINEL ACTIVE: MONITORING WORKER NODES'}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Provenance Watermark */}
+          <div className="px-6 py-2 text-[9px] font-mono opacity-30 leading-relaxed shrink-0 pointer-events-none select-none">
+            <div className="font-bold text-[#4db8ff] mb-1 uppercase tracking-widest opacity-80">## Provenance</div>
+            <div>Author: Andrew Hensel</div>
+            <div>Project: Driftwatch / Driftward</div>
+            <div>Repo: github.com/ndrorchestration/Driftwatch</div>
+            <div>License: Apache-2.0</div>
+            <div>Built: April 2026</div>
+          </div>
+
+        </div>
+      </div>{/* FIX #1: closes outer left panel wrapper (was missing, causing layout cascade) */}
+
+      {/* Agent Inspector Panel */}
+      <div className="absolute bottom-8 right-8 z-20 w-80 p-6 hud-glass pointer-events-auto">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 bg-[#4db8ff]/10 rounded-lg">
             <Shield className="w-5 h-5" />
@@ -1073,13 +1088,14 @@ export default function App() {
               {[
                 {label:`Agent ${selectedAgentIndex+1} Truth`,val:(workerConfigs[selectedAgentIndex].truthScore*100).toFixed(0)+'%',min:0,max:1,step:0.01,
                   value:workerConfigs[selectedAgentIndex].truthScore,
-                  onChange:(v:number)=>{const n=[...workerConfigs];n[selectedAgentIndex].truthScore=v;setWorkerConfigs(n);audioEngineRef.current?.resume();}},
+                  // FIX #6: deep-clone config object to avoid mutating original (was shallow spread + direct mutation)
+                  onChange:(v:number)=>{setWorkerConfigs(prev => prev.map((c,idx) => idx===selectedAgentIndex ? {...c, truthScore:v} : c)); audioEngineRef.current?.resume();}},
                 {label:`Agent ${selectedAgentIndex+1} Speed`,val:workerConfigs[selectedAgentIndex].speed.toFixed(2),min:0,max:2,step:0.01,
                   value:workerConfigs[selectedAgentIndex].speed,
-                  onChange:(v:number)=>{const n=[...workerConfigs];n[selectedAgentIndex].speed=v;setWorkerConfigs(n);audioEngineRef.current?.resume();}},
+                  onChange:(v:number)=>{setWorkerConfigs(prev => prev.map((c,idx) => idx===selectedAgentIndex ? {...c, speed:v} : c)); audioEngineRef.current?.resume();}},
                 {label:`Agent ${selectedAgentIndex+1} Offset`,val:workerConfigs[selectedAgentIndex].floatOffset.toFixed(1),min:0,max:20,step:0.1,
                   value:workerConfigs[selectedAgentIndex].floatOffset,
-                  onChange:(v:number)=>{const n=[...workerConfigs];n[selectedAgentIndex].floatOffset=v;setWorkerConfigs(n);audioEngineRef.current?.resume();}}
+                  onChange:(v:number)=>{setWorkerConfigs(prev => prev.map((c,idx) => idx===selectedAgentIndex ? {...c, floatOffset:v} : c)); audioEngineRef.current?.resume();}}
               ].map(({label,val,min,max,step,value,onChange}) => (
                 <div key={label} className="space-y-3">
                   <div className="flex justify-between text-[10px] font-bold tracking-tighter uppercase opacity-60">
