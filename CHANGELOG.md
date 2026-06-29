@@ -10,6 +10,8 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 - CI workflow: TypeScript type-check, ESLint, build gate (`.github/workflows/ci.yml`)
+- `VITE_GEMINI_API_KEY` environment variable documented in `.env.example` with inline guidance on the required `VITE_` prefix and key acquisition URL
+- README Quick Start expanded with Environment Setup section to prevent Gemini agent cognition errors on first run
 
 ---
 

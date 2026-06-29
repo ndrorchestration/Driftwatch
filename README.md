@@ -60,6 +60,28 @@ Agent Output Stream
 git clone https://github.com/ndrorchestration/Driftwatch.git
 cd Driftwatch
 npm install
+```
+
+### Environment Setup
+
+Copy the example env file and configure your keys before running:
+
+```bash
+cp .env.example .env
+```
+
+Open `.env` and set the required variables:
+
+| Variable | Required | Description |
+|---|---|---|
+| `VITE_GEMINI_API_KEY` | ✅ Yes | Powers Agent Herald cognition. Get a key at [aistudio.google.com](https://aistudio.google.com/app/apikey). The `VITE_` prefix is mandatory — Vite only exposes variables with this prefix to the browser via `import.meta.env`. |
+| `APP_URL` | Optional | Hosting URL for self-referential links and OAuth callbacks. Defaults to `http://localhost:3000`. |
+
+> **Omitting `VITE_GEMINI_API_KEY`** will cause the agent to report `VITE_GEMINI_API_KEY is missing` and disable Gemini-powered cognition.
+
+Then start the dev server:
+
+```bash
 npm run dev
 ```
 
