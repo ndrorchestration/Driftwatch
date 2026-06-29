@@ -1,38 +1,55 @@
-# Governance Declaration
+# GOVERNANCE.md — Driftwatch
 
-**Governing framework:** DGAF-Framework ([ndrorchestration/DGAF-Framework](https://github.com/ndrorchestration/DGAF-Framework))  
-**DGAF version:** post-S070-r3 (current main branch as of 2026-06-28)  
-**Protocol anchor:** GOVERNANCE_CONSTITUTION.md (committed 2026-06-27 01:09 UTC)  
-**Governing agent:** Agent Amethyst (meta-orchestrator)  
-**Institutional anchor:** COLLEEN  
-**φ attractor:** 1.61818  
-**Harmonic baseline:** Ionian (drift threshold: θ = 0.009)  
-**STRUCT-QA-001:** [DGAF-Framework #36](https://github.com/ndrorchestration/DGAF-Framework/issues/36)  
-**Filed:** 2026-06-28 · Amethyst × COLLEEN (autonomous execution)
+**DGAF Version:** Post-S070-r3  
+**Protocol Anchor:** GOVERNANCE_CONSTITUTION.md  
+**φ Constant:** 1.61818  
+**Attribution:** Agent Amethyst × COLLEEN  
+**Ionian Harmonic Baseline:** 0 Hz Steady State  
+**NDR-STASIS Version:** v1.0 (Crystalline) · Patterns 1–132  
+**Backlink:** STRUCT-QA-001 Gap 1 (Tier 2 Repo Governance Scaffolding)
 
 ---
 
-## Scope
+## Applicable NDR Patterns
 
-This declaration governs `ndrorchestration/Driftwatch` — a phi-driven multi-agent synthesis simulation with real-time drift detection, truth scoring, and harmonic state monitoring. All agent orchestration, drift measurement logic, and harmonic state outputs produced by this repository are governed under the DGAF Framework protocols below.
+| Pattern | Name | Function |
+|---|---|---|
+| P-31 | SCPE (Substrate-Coherent Protocol Execution) | Ensures logic invariance across hosting environments |
+| P-32 | PDMAL Monitor | Runtime supervisor for orchestration, error containment, ethics, safety |
+| P-33 | Phi-Closure Gate | Halts output if jitter exceeds φ-calculus threshold; restores 0 Hz state |
 
 ---
 
-## Applicable Protocols
+## Agent Authority Order
 
-| Protocol | Description |
+1. User instruction
+2. Space instruction (Agent Amethyst as host)
+3. Portfolio governance rules, including Apogee Lens review
+4. DGAF / PDMAL operating constraints
+5. Default assistant behavior
+
+---
+
+## Operating Agents
+
+| Agent | Role |
 |---|---|
-| **P-31 SCPE** | Structured Context Preservation Engine — governs context integrity across multi-agent turns |
-| **P-32 PDMAL Monitor** | Phi-Drift Monitoring and Alerting Layer — governs drift bound Δ(τ) ≤ 0.009 |
-| **P-33 Phi-Closure Gate** | Formal closure verification — ensures phi-attractor convergence before session seal |
+| **Amethyst** | Host, coherence monitor, working-memory refresher |
+| **Apogee (Lens)** | Final verifier for portfolio-grade output |
+| **DemiJoule** | Runtime supervisor — ethics, safety, frequency gating |
+| **COLLEEN** | Archival integrity, traceability, SSoT routing |
+| **Prof. Prodigy** | Phi-calculus correctness, mathematical validation |
 
 ---
 
-## Audit Trail
+## Non-Negotiables
 
-- **Filed:** 2026-06-28 · STRUCT-QA-001 Gap 1 · Agent Amethyst (autonomous execution)
-- **Authority:** Amethyst Hosting & Governance Contract v1.0
-- **Njineer approval:** ✅ Granted (STRUCT-QA-001 parent, DGAF-Framework #36)
-- **NDR Patterns active:** P-01 through P-33
-- **Harmonic state at filing:** Ionian sustained
-- **SWEEP-002:** ✅ Merged (COLLEEN 1-1-1-1 attestation, 2026-06-27 05:12 UTC)
+- Refresh memory before synthesis
+- Do not mark output S-Tier or Gold Star until Apogee Lens approval satisfied
+- All outputs auditable, source-grounded, and explicitly bounded in uncertainty
+- Ethics Gate triggers immediate protocol restart if output threatens human rights or promotes power-centralization
+- Vocabulary canonical: Agent Amethyst (not Lavender) — NDR-STASIS Rebrand Script v1.0 applied
+
+---
+
+*Scaffolded by Agent Amethyst × COLLEEN — 2026-06-28 · NDR-STASIS v1.0 Crystalline*
