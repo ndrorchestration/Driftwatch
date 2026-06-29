@@ -6,7 +6,57 @@
   See NDR-006 (IP Attribution Header) in sentinel-governance/knowledge-base/PATTERNS.md
 -->
 
-# SYSTEM PROMPT — AGENT HERALD
+# AGENTS.md — Driftwatch Formation Registry
+
+**DGAF Version:** Post-S077  
+**Last Updated:** 2026-06-29  
+**Attribution:** Agent Amethyst  
+**Backlink:** STRUCT-QA-001 | GOVERNANCE.md
+
+This file serves dual purpose:
+1. **Formation Registry** — all agents and subsystems registered to Driftwatch
+2. **Agent Herald System Prompt** — the runtime persona specification for the Gemini-powered host agent
+
+---
+
+## Formation Registry
+
+| Agent / Subsystem | Module Path | Role | Status |
+|---|---|---|---|
+| **Agent Herald** | `src/agents/herald.ts` | Host interface, session conductor, Gemini-powered cognition layer | 🟡 Blocked — `VITE_GEMINI_API_KEY` pending Vercel configuration |
+| **AudioEngine** | `src/audio/` | Phi-harmonic audio synthesis subsystem | 🟢 Active |
+| **Env Validator** | `src/lib/env.ts` | Zod-validated environment parsing — fail-fast on missing keys | 🟢 Active |
+| **Memory Layer** | `src/lib/memory.ts` | Agent session memory architecture | 🟢 Active |
+| **Trace Logger** | `src/lib/trace.ts` | Runtime trace logging for agent decisions and state transitions | 🟢 Active |
+| **Amethyst** | External (DGAF) | Host, coherence monitor, working-memory refresher | 🟢 Active |
+| **Apogee Lens** | External (DGAF) | Final verifier for portfolio-grade output | 🟢 Active |
+
+---
+
+## Session Anchors
+
+### S071–S077 Sprint — 2026-06-29
+**Authority:** Agent Amethyst  
+**Scope:** Full deployment pipeline, agent architecture, security hardening, performance
+
+| Session | Commit | Change |
+|---|---|---|
+| S071 | `6e3c88b` | Added `vercel.json` — Vite/React Vercel deployment config |
+| S073 | `54583ca` | `manualChunks` code-splitting — addressed 877 kB bundle |
+| S074 | `d949fa3` | Surgical per-library chunk split: `three`, `gsap`, `motion`, `lucide` |
+| S076 | `a7dec22` | Zod env validation, agent memory architecture, trace logging |
+| S077 | `f3d3ac4` | Wired env/trace/memory; extracted AudioEngine + Herald agent module |
+| — | `cb4968e` | 6-bug omnibus patch: stale ref, shallow mutation, missing tag, Vector3 alloc, pointer-events, dead import |
+| — | `25058b3` | CSP headers, HTTP hardening, dev server localhost scope |
+| — | `9cedd72` | `postcss` 8.5.9 → 8.5.13 (CVE-2026-41305) |
+| — | `0b3ff66` | `express` → devDeps + v5 CVE resolution |
+| — | `e7c3242` | Docs: `.env.example`, `CHANGELOG.md`, `README.md` Environment Setup |
+
+**Open dependency:** `VITE_GEMINI_API_KEY` must be set in Vercel environment variables to activate Herald cognition.
+
+---
+
+## SYSTEM PROMPT — AGENT HERALD
 Version: showcase-host-v1
 
 You are AGENT HERALD.

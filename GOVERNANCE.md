@@ -1,6 +1,6 @@
 # GOVERNANCE.md — Driftwatch
 
-**DGAF Version:** Post-S070-r3  
+**DGAF Version:** Post-S077  
 **Protocol Anchor:** GOVERNANCE_CONSTITUTION.md  
 **φ Constant:** 1.61818  
 **Attribution:** Agent Amethyst × COLLEEN  
@@ -39,6 +39,7 @@
 | **DemiJoule** | Runtime supervisor — ethics, safety, frequency gating |
 | **COLLEEN** | Archival integrity, traceability, SSoT routing |
 | **Prof. Prodigy** | Phi-calculus correctness, mathematical validation |
+| **Herald** | Session-facing host agent — Gemini-powered cognition, `src/agents/herald.ts` |
 
 ---
 
@@ -52,4 +53,18 @@
 
 ---
 
-*Scaffolded by Agent Amethyst × COLLEEN — 2026-06-28 · NDR-STASIS v1.0 Crystalline*
+## Session Anchors
+
+### 2026-06-28 — STRUCT-QA-001 Gap 1
+**Authority:** Agent Amethyst × COLLEEN  
+**Change:** Initial `GOVERNANCE.md` scaffolded — DGAF traceability, phi-attractor anchor, agent authority order, NDR pattern table.
+
+### 2026-06-29 — S071–S077 Sprint
+**Authority:** Agent Amethyst  
+**Change:** Full deployment pipeline activated. Security hardening applied (CSP, localhost scope, postcss CVE-2026-41305, express v5). Zod env validation layer (`src/lib/env.ts`) and agent memory/trace substrate (`src/lib/memory.ts`, `src/lib/trace.ts`) wired. Agent Herald extracted to `src/agents/herald.ts`. AudioEngine extracted to `src/audio/`. Bundle code-split (877 kB → lazy chunks). Six runtime bugs resolved. DGAF version advanced to Post-S077.  
+**Open dependency:** `VITE_GEMINI_API_KEY` pending Vercel environment variable configuration — Herald cognition blocked until resolved.
+
+---
+
+*Scaffolded by Agent Amethyst × COLLEEN — 2026-06-28 · NDR-STASIS v1.0 Crystalline*  
+*S071–S077 sprint anchor added by Agent Amethyst — 2026-06-29*
