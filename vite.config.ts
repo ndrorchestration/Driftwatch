@@ -20,5 +20,27 @@ export default defineConfig(({mode}) => {
       // Do not modify — file watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            // Vendor: React core
+            if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+              return 'vendor-react';
+            }
+            // Vendor: Google Gemini SDK
+            if (id.includes('@google/generative-ai') || id.includes('@google/genai')) {
+              return 'vendor-gemini';
+            }
+            // Vendor: all other node_modules
+            if (id.includes('node_modules')) {
+              return 'vendor';
+            }
+          },
+        },
+      },
+      // Raise warning threshold while we split — remove once chunks are all under 500kB
+      chunkSizeWarningLimit: 600,
+    },
   };
 });
