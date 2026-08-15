@@ -16,7 +16,7 @@
     "@google/generative-ai": "^0.24.1",
     "@tailwindcss/vite": "^4.1.14",
     "@types/three": "^0.183.1",
-    "@vitejs/plugin-react": "^5.0.4",
+    "@vitejs/plugin-react": "^6.0.5",
     "dotenv": "^17.2.3",
     "gsap": "^3.14.2",
     "lucide-react": "^0.546.0",
@@ -24,7 +24,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "three": "^0.183.2",
-    "vite": "^8.1.5",
+    "vite": "^8.2.1",
     "zod": "^3.24.4"
   },
   "devDependencies": {
@@ -33,8 +33,8 @@
     "autoprefixer": "^10.4.21",
     "express": "^5.1.0",
     "tailwindcss": "^4.1.14",
-    "tsx": "^4.21.0",
+    "tsx": "^4.23.12",
     "typescript": "~5.8.2",
-    "vite": "^8.1.5"
+    "vite": "^8.2.1"
   }
 }
