@@ -14,7 +14,9 @@ Driftwatch remains **Active / experimental**. Its current README correctly separ
 - `GOVERNANCE.md` exists and identifies the DGAF governance relationship.
 - `.github/workflows/ci.yml` performs TypeScript checking and a production build on pushes and pull requests to `main`.
 - `package.json` exposes `build` and `lint` scripts; `lint` currently maps to `tsc --noEmit`.
-- A lockfile is present, supporting reproducible dependency installation through `npm ci`.
+- `package-lock.json` is present and its root package identity has been normalized to `driftwatch` / `0.1.0`, matching `package.json`.
+- CI uses `npm ci`, so lockfile consistency is operationally relevant.
+- Repository search did not identify a current Vitest/Jest-style automated test suite or test script; this remains an evidence gap, not a claim that no test-like code exists elsewhere.
 
 ## Gaps
 
@@ -31,13 +33,15 @@ Required before promotion:
 6. reproducible calibration artifact.
 
 ### P1 — test-depth evidence
-Current CI demonstrates type-check/build integrity but does not, from the inspected workflow, establish detector behavior or effectiveness. A dedicated automated test/benchmark job should be added when the detector benchmark is implemented.
+Current CI demonstrates type-check/build integrity but does not establish detector behavior or effectiveness. A dedicated automated test/benchmark job should be added when the detector benchmark is implemented.
+
+The absence of a discovered test framework means Driftwatch should not currently be represented as having a conventional automated unit-test gate.
 
 ### P1 — governance freshness
 `GOVERNANCE.md` contains historical protocol references and a 2026-07-03 filing date. It should remain explicitly historical where appropriate and should not be interpreted as evidence that the listed protocols are currently implemented or validated.
 
 ### P2 — dependency/provenance hygiene
-The lockfile root metadata still identifies the package as `react-example` / `0.0.0` while `package.json` identifies `driftwatch` / `0.1.0`. This is a provenance/coherence defect and should be reconciled in a controlled dependency-lock refresh.
+The package metadata/lockfile identity defect identified during this audit has been corrected in commits `be2354dd` and `ef3276c`. A full `npm ci` plus type-check/build run remains required before dependency reproducibility can be marked verified.
 
 ## Security boundary
 
@@ -49,4 +53,4 @@ A passing CI build is evidence of build/type integrity only. It is not evidence 
 
 ## Next action
 
-Implement the benchmark/calibration artifact tracked by issue #7, then add it as a deterministic CI job. Re-run this baseline after that evidence exists.
+Implement the benchmark/calibration artifact tracked by issue #7, then add it as a deterministic CI job. Separately, establish a small conventional automated test boundary for core deterministic logic before treating test-depth as complete. Re-run this baseline after that evidence exists.
