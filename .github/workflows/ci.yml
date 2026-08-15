@@ -1,4 +1,4 @@
-name: CI — Type Check & Lint
+name: CI — Type Check & Build
 
 on:
   push:
@@ -24,27 +24,7 @@ jobs:
         run: npm ci
 
       - name: Run TypeScript type check
-        run: npx tsc --noEmit
-
-  lint:
-    name: ESLint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run ESLint
-        run: npx eslint src --ext .ts,.tsx --max-warnings 0
-        continue-on-error: true
+        run: npm run lint
 
   build:
     name: Build Check
@@ -53,7 +33,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+        
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
