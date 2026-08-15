@@ -1,24 +1,27 @@
-# Release and Evidence Policy
+# Driftwatch Release and Evidence Policy
 
-## Current posture
+## Current software version
 
-Driftwatch is an experimental drift/evaluation system. Application infrastructure and supporting subsystems may be implemented while the core drift detector remains benchmark-pending.
+`0.1.0` — experimental software baseline.
 
-## Versioning
+The version identifies repository/software evolution. It is not a detector-accuracy score, calibration status, certification, or production-readiness claim.
 
-Use `0.x.y` while detector semantics, benchmark protocol, and interfaces remain subject to change. A major version requires a stable detector contract and documented compatibility policy; it must not be triggered solely by conceptual changes.
+## Evidence ladder
 
-## Evidence rule
+`SPECIFIED → IMPLEMENTED → UNIT-TESTED → BENCHMARKED → CALIBRATED → REPLICATED`
 
-A release may document implementation status, but a version number is not a validation claim.
+The repository may contain multiple capabilities at different evidence states. A project version does not promote all capabilities to the same evidence state.
 
-Detector claims require dated benchmark artifacts with:
+## Detector claim gate
 
-- frozen test inputs;
-- baseline comparison;
-- threshold provenance;
-- precision/recall or other justified metrics;
-- false-positive/false-negative analysis;
-- reproducible execution instructions.
+Driftwatch must not be described as a validated drift detector until a reproducible benchmark reports the metrics specified in `docs/DRIFT_SIGNAL_SPEC.md`, including nominal false-positive behavior, precision, recall, F1, detection latency, recovery latency, perturbation stratification, and dataset/configuration provenance.
 
-Until those artifacts exist, describe detector capability as experimental or benchmark-pending.
+A threshold is a parameter until calibration evidence establishes it. A historical benchmark is historical evidence until the experiment is reproducibly rerun under documented conditions.
+
+## Integration rule
+
+Integration with another ndrorchestration repository establishes only the tested interface behavior. It does not transfer that repository's evidence claims into Driftwatch or vice versa.
+
+## Promotion
+
+A future `0.2.x` may be appropriate after the detector implementation and initial benchmark are reproducibly established. A `1.0.0` candidate requires stable interfaces and evidence appropriate to every capability represented as stable.
