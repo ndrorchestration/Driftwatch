@@ -31,4 +31,4 @@ Driftwatch is the phi-drift monitoring substrate of the DGAF ecosystem. This rep
 - Parent issue: https://github.com/ndrorchestration/DGAF-Framework/issues/36
 - Constitutional authority: GOVERNANCE_CONSTITUTION.md Part V, T2-01
 - Registry watermark at filing: P-41 (S071)
-- Stasis window: ACTIVE (2026-06-13 → 2026-07-13)
+- Stasis window: EXPIRED (2026-07-13)
