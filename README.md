@@ -1,58 +1,43 @@
 # Driftwatch
+
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/License-Apache%202.0-01696f?style=flat-square)
-![Governed](https://img.shields.io/badge/Governed%20by-DGAF--Framework-7a39bb?style=flat-square)
-![Topics](https://img.shields.io/badge/topics-drift--detection%20%7C%20phi--harmonic%20%7C%20multi--agent%20%7C%20truth--scoring-4f98a3?style=flat-square)
-![Maintained](https://img.shields.io/badge/Maintained-yes-437a22?style=flat-square)
 
-> **Governance:** DGAF / Agent Amethyst — Yes. Driftwatch operates as a real-time drift detection and truth-scoring layer within the DGAF evaluation stack. Outputs feed into [3d-visualization-hub](https://github.com/ndrorchestration/3d-visualization-hub). See [DGAF-Framework](https://github.com/ndrorchestration/DGAF-Framework) for spine documentation.
+> **Epistemic status:** Active experimental engineering. Driftwatch is a drift-detection/evaluation project. References to DGAF, phi-calculus, truth scoring, or governance describe project integrations or research vocabulary; they do not by themselves establish mathematical validity, certification, or production performance.
 
-**Phi-driven multi-agent synthesis simulation with real-time drift detection, truth scoring, and harmonic state monitoring.**
+## Purpose
 
-Driftwatch tracks when AI agent outputs begin diverging from certified baselines — detecting semantic drift, hallucination drift, and phi-harmonic dissonance across multi-agent synthesis runs.
+Driftwatch explores detection and monitoring of changes in AI-agent outputs and workflow state. The repository may provide scoring, visualization, and integration components; the actual implementation and current tests are authoritative for capability claims.
 
----
+## Core areas
 
-## Formal Substrate
+- Semantic/output drift detection where implemented
+- Agent-state and workflow monitoring
+- Evaluation and scoring experiments
+- Drift trajectory visualization/integration
+- Integration hooks for broader agent-evaluation workflows
 
-Driftwatch's drift scoring is grounded in the **Phi-Calculus Architecture** formal model.
+## Epistemic boundary
 
-- **Drift functional Δ: T → R≥0** — the formal definition underpinning Driftwatch's drift scores is specified in the [Phi-Calculus Architecture: Definitions, Theorem, Proof](https://github.com/ndrorchestration/DGAF-Framework/blob/main/docs/phi-calculus-architecture/DEFINITIONS_THEOREM_PROOF.md) canonical doc in DGAF-Framework.
-- **Theta threshold (θ = 0.009)** — the Phi-Compliance region bound, calibrated to the OST-50 Platinum baseline (99.1% integrity retention).
-- **Tarski-Governed Phi-Compliance** — Theorem 1 proves that the Layer 0 governance operator converges to `lfp(F)` in at most `|C|` iterations, providing the convergence guarantee for Driftwatch's truth-scoring loop.
-- **Amethyst-Lattice-v3.1 mapping** — the formal correspondence between Driftwatch's convergence/divergence monitoring and the Phi-Calculus fixed-point substrate is documented in Section 5 of the spec.
+Historical README language described several project-local constructs as formal theorems, certified baselines, or calibrated guarantees. Those descriptions are not promoted here to current facts without reproducible evidence.
 
----
+In particular:
 
-## Core Capabilities
+- A drift functional is a defined or implemented quantity only to the extent demonstrated by the relevant source and tests.
+- Numeric thresholds such as `θ = 0.009` are parameters unless a reproducible calibration procedure and dataset establish them.
+- Terms such as **Tarski-Governed Phi-Compliance**, **PHDGE**, **Amethyst-Lattice**, and **Gold Star Standards** are project vocabulary unless their claimed external/mathematical equivalence is independently established.
+- A historical benchmark or certification statement does not constitute current validation without a reproducible run.
+- Cross-repository integration does not mean that one repository validates another.
 
-- **Real-time drift detection** — continuous state observation against certified baselines
-- **Truth scoring** — probabilistic confidence scoring per agent output
-- **Phi-harmonic state monitoring** — modal frequency analysis anchored to Phi-Harmonic Dynamic Governance Ecosystem (PHDGE) ratios
-- **Multi-agent synthesis simulation** — simulate N-agent chains and observe convergence/divergence
-- **Drift trajectory visualization** — feeds into [3d-visualization-hub](https://github.com/ndrorchestration/3d-visualization-hub) for 3D manifold rendering
+## Architecture relationship
 
----
+Driftwatch can integrate with other ndrorchestration projects, including DGAF-Framework, 3d-visualization-hub, junior-apogee-app, Amethyst-Governance-Eval-Stack, and sentinel-governance. These are separate repositories with their own implementation and evidence boundaries.
 
-## How It Works
+## Acronyms
 
-```
-Agent Output Stream
-       ↓
-  Baseline Comparison  ←  Certified reference (Gold Star Standards)
-       ↓
-  Phi-Harmonic Gate    ←  PHDGE ratio validation (Professor Prodigy)
-       ↓
-  Drift Score Δ(τ)     ←  0.0 (stable) → 1.0 (critical drift) | θ = 0.009
-       ↓
-  Truth Score          ←  Confidence-weighted output validity
-       ↓
-  MDAR Trigger         →  Monitor → Detect → Assess → Respond
-       ↓
-  Compliance Decision  ←  ACCEPT / REVISE / ESCALATE / REJECT
-```
-
----
+- **DGAF** — Dynamic Governance Agentic Formation.
+- **MDAR** — use the canonical acronym registry for the current expansion; do not infer an expansion from this README.
+- **PHDGE** — project-local terminology; expansion and evidentiary status are controlled by the canonical vocabulary documentation.
 
 ## Quick Start
 
@@ -62,41 +47,18 @@ cd Driftwatch
 npm install
 ```
 
-### Environment Setup
-
-Copy the example env file and configure your keys before running:
+If the repository's current application requires environment variables, use the checked-in example environment file and follow the current application documentation. Never commit API keys or other secrets.
 
 ```bash
 cp .env.example .env
-```
-
-Open `.env` and set the required variables:
-
-| Variable | Required | Description |
-|---|---|---|
-| `VITE_GEMINI_API_KEY` | ✅ Yes | Powers Agent Herald cognition. Get a key at [aistudio.google.com](https://aistudio.google.com/app/apikey). The `VITE_` prefix is mandatory — Vite only exposes variables with this prefix to the browser via `import.meta.env`. |
-| `APP_URL` | Optional | Hosting URL for self-referential links and OAuth callbacks. Defaults to `http://localhost:3000`. |
-
-> **Omitting `VITE_GEMINI_API_KEY`** will cause the agent to report `VITE_GEMINI_API_KEY is missing` and disable Gemini-powered cognition.
-
-Then start the dev server:
-
-```bash
 npm run dev
 ```
 
----
+## Status
 
-## Related Ecosystem
+**Active / experimental.**
 
-- [DGAF-Framework](https://github.com/ndrorchestration/DGAF-Framework) — governance spine
-- [Phi-Calculus Architecture Formal Spec](https://github.com/ndrorchestration/DGAF-Framework/blob/main/docs/phi-calculus-architecture/DEFINITIONS_THEOREM_PROOF.md) — formal substrate for drift functional and compliance region
-- [junior-apogee-app](https://github.com/ndrorchestration/junior-apogee-app) — primary agent evaluation platform (Driftwatch monitors its outputs)
-- [3d-visualization-hub](https://github.com/ndrorchestration/3d-visualization-hub) — renders Driftwatch drift trajectories in 3D
-- [Amethyst-Governance-Eval-Stack](https://github.com/ndrorchestration/Amethyst-Governance-Eval-Stack) — MDAR protocol layer that responds to Driftwatch alerts
-- [sentinel-governance](https://github.com/ndrorchestration/sentinel-governance) — CI/CD enforcement companion
-
----
+Before presenting Driftwatch as a certified detector, production control, or validated mathematical system, verify the exact implementation, test results, benchmark provenance, calibration data, and current commit.
 
 ## License
 
@@ -104,5 +66,4 @@ Apache License 2.0 — see [LICENSE](LICENSE) for details.
 
 ## Provenance
 
-Developed by [Ndr "Ender" Hensel](https://github.com/ndrorchestration) — AI Orchestration Engineer & Systems Architect, Columbus OH.  
-[LinkedIn](https://www.linkedin.com/in/andrewhensel) · [GitHub](https://github.com/ndrorchestration)
+Developed by Ndr / Ender Hensel (`ndrorchestration`).
