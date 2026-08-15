@@ -17,6 +17,10 @@
 | Notion synchronization | PENDING | ecosystem registry reconciliation |
 | Vercel/runtime synchronization | PENDING if a canonical deployment is claimed | deployment-specific evidence required |
 
+## Connector / execution note
+
+A workflow-job lookup attempted during the 2026-08-15 synchronization pass did not resolve a valid job (`404 Not Found`). This is recorded as **execution evidence unavailable**, not as either a CI pass or failure.
+
 ## Closure rule
 
 Driftwatch may be considered documentation/versioning-closed for its current experimental scope when all applicable documentation rows are VERIFIED. It must remain benchmark-pending until detector evidence exists.
