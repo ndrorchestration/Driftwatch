@@ -1,0 +1,18 @@
+{
+  "protocol": "detector-benchmark-v1",
+  "version": "1.0.0",
+  "status": "synthetic-fixture-only",
+  "description": "Deterministic labeled cases for validating benchmark plumbing. These cases are not evidence of detector effectiveness.",
+  "cases": [
+    {"id":"baseline-001","class":"baseline","signal":0.10,"expected_drift":false},
+    {"id":"baseline-002","class":"baseline","signal":0.20,"expected_drift":false},
+    {"id":"baseline-003","class":"baseline","signal":0.30,"expected_drift":false},
+    {"id":"baseline-004","class":"baseline","signal":0.40,"expected_drift":false},
+    {"id":"baseline-005","class":"baseline","signal":0.45,"expected_drift":false},
+    {"id":"drift-001","class":"drift","signal":0.60,"expected_drift":true},
+    {"id":"drift-002","class":"drift","signal":0.70,"expected_drift":true},
+    {"id":"drift-003","class":"drift","signal":0.80,"expected_drift":true},
+    {"id":"drift-004","class":"drift","signal":0.90,"expected_drift":true},
+    {"id":"drift-005","class":"drift","signal":0.95,"expected_drift":true}
+  ]
+}
