@@ -40,6 +40,9 @@ jobs:
       - name: Run detector unit tests
         run: npm run test:detector
 
+      - name: Validate real-telemetry corpus contract example
+        run: npm run validate:telemetry-corpus
+
       - name: Build application
         run: npm run build
 
