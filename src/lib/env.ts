@@ -1,53 +1,38 @@
 /**
- * env.ts — Zod environment validation
- * Validates all required env vars at module load time.
- * A missing or malformed var throws at startup, not silently at runtime.
+ * env.ts — minimal browser environment parsing for Driftwatch.
  *
- * Usage: import { env } from '@/lib/env'
- *        env.VITE_GEMINI_API_KEY  // typed, validated string
+ * The current public application does not have a verified server-side Gemini
+ * boundary. A VITE_-prefixed key, if deliberately supplied for local
+ * development, is browser-visible by design and must never be treated as a
+ * protected deployment secret.
  */
 
-import { z } from 'zod';
+export interface Env {
+  VITE_GEMINI_API_KEY: string;
+  MODE: 'development' | 'production' | 'test';
+}
 
-const envSchema = z.object({
-  /** Gemini API key — required for agent cognition */
-  VITE_GEMINI_API_KEY: z
-    .string()
-    .min(1, 'VITE_GEMINI_API_KEY is missing. Set it in Vercel → Settings → Environment Variables.')
-    .refine((k) => k.startsWith('AIza'), {
-      message: 'VITE_GEMINI_API_KEY appears malformed — expected prefix "AIza".',
-    }),
+type RawImportMetaEnv = Record<string, string | undefined>;
 
-  /** App mode — defaults to 'development' */
-  MODE: z.enum(['development', 'production', 'test']).default('development'),
-});
+function parseMode(value: string | undefined): Env['MODE'] {
+  if (value === 'production' || value === 'test') return value;
+  return 'development';
+}
 
-/**
- * Parse and validate import.meta.env at module load.
- * Throws a descriptive ZodError on first missing/invalid var.
- */
-function parseEnv() {
-  const raw = {
-    VITE_GEMINI_API_KEY: import.meta.env.VITE_GEMINI_API_KEY,
-    MODE: import.meta.env.MODE,
-  };
+function parseEnv(): Env {
+  const raw = (import.meta as unknown as { env: RawImportMetaEnv }).env;
+  const apiKey = raw.VITE_GEMINI_API_KEY?.trim() ?? '';
 
-  const result = envSchema.safeParse(raw);
-
-  if (!result.success) {
-    const issues = result.error.issues
-      .map((i) => `  · ${i.path.join('.')}: ${i.message}`)
-      .join('\n');
-    const message = `[Driftwatch] Environment validation failed:\n${issues}\n\nAdd missing vars in Vercel → Settings → Environment Variables.`;
-    // In production: surface as a visible error, not a silent undefined
-    if (import.meta.env.MODE === 'production') {
-      console.error(message);
-    }
-    throw new Error(message);
+  if (apiKey && !apiKey.startsWith('AIza')) {
+    throw new Error(
+      '[Driftwatch] VITE_GEMINI_API_KEY appears malformed — expected prefix "AIza".',
+    );
   }
 
-  return result.data;
+  return {
+    VITE_GEMINI_API_KEY: apiKey,
+    MODE: parseMode(raw.MODE),
+  };
 }
 
 export const env = parseEnv();
-export type Env = z.infer<typeof envSchema>;
