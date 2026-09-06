@@ -1,0 +1,47 @@
+{
+  "protocol": "detector-benchmark-v1",
+  "fixture_status": "synthetic-fixture-only",
+  "scope": "synthetic decision-layer plumbing only; not detector-effectiveness evidence",
+  "implementation_commit": "8a67defaa69a452ea11448255ac44d3511640686",
+  "fixture_sha256": "78d006f891df282eb90c76df1285868994561e6c28bc096ea5e39f21d2d2f543",
+  "detector": {
+    "name": "transparent-normalized-change",
+    "version": "0.1.0"
+  },
+  "configuration": {
+    "signal": "fixture-provided scalar candidate score; multivariate score derivation is not exercised by this fixture",
+    "threshold": 0.5,
+    "persistence": 1
+  },
+  "cases": [
+    {"id":"baseline-001","class":"baseline","signal":0.1,"expected_drift":false,"predicted_drift":false,"correct":true},
+    {"id":"baseline-002","class":"baseline","signal":0.2,"expected_drift":false,"predicted_drift":false,"correct":true},
+    {"id":"baseline-003","class":"baseline","signal":0.3,"expected_drift":false,"predicted_drift":false,"correct":true},
+    {"id":"baseline-004","class":"baseline","signal":0.4,"expected_drift":false,"predicted_drift":false,"correct":true},
+    {"id":"baseline-005","class":"baseline","signal":0.45,"expected_drift":false,"predicted_drift":false,"correct":true},
+    {"id":"drift-001","class":"drift","signal":0.6,"expected_drift":true,"predicted_drift":true,"correct":true},
+    {"id":"drift-002","class":"drift","signal":0.7,"expected_drift":true,"predicted_drift":true,"correct":true},
+    {"id":"drift-003","class":"drift","signal":0.8,"expected_drift":true,"predicted_drift":true,"correct":true},
+    {"id":"drift-004","class":"drift","signal":0.9,"expected_drift":true,"predicted_drift":true,"correct":true},
+    {"id":"drift-005","class":"drift","signal":0.95,"expected_drift":true,"predicted_drift":true,"correct":true}
+  ],
+  "summary": {
+    "negative_cases": 5,
+    "positive_cases": 5,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "false_positive_rate": 0,
+    "false_negative_rate": 0
+  },
+  "calibration": {
+    "status": "uncalibrated",
+    "dataset": null,
+    "note": "Threshold 0.5 is a predeclared synthetic fixture decision boundary, not a calibrated Driftwatch production threshold."
+  },
+  "limitations": [
+    "Fixture labels and scalar signals are synthetic and intentionally separable.",
+    "The fixture validates benchmark plumbing and decision semantics only.",
+    "The multivariate normalized-change score requires a separately frozen telemetry corpus for effectiveness evaluation.",
+    "No claim about real-world precision, recall, calibration, or superiority is supported by this result."
+  ]
+}
