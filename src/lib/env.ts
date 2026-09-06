@@ -8,9 +8,11 @@
  */
 
 export interface Env {
-  VITE_GEMINI_API_KEY?: string;
+  VITE_GEMINI_API_KEY: string;
   MODE: 'development' | 'production' | 'test';
 }
+
+type RawImportMetaEnv = Record<string, string | undefined>;
 
 function parseMode(value: string | undefined): Env['MODE'] {
   if (value === 'production' || value === 'test') return value;
@@ -18,7 +20,8 @@ function parseMode(value: string | undefined): Env['MODE'] {
 }
 
 function parseEnv(): Env {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+  const raw = (import.meta as unknown as { env: RawImportMetaEnv }).env;
+  const apiKey = raw.VITE_GEMINI_API_KEY?.trim() ?? '';
 
   if (apiKey && !apiKey.startsWith('AIza')) {
     throw new Error(
@@ -27,8 +30,8 @@ function parseEnv(): Env {
   }
 
   return {
-    VITE_GEMINI_API_KEY: apiKey || undefined,
-    MODE: parseMode(import.meta.env.MODE),
+    VITE_GEMINI_API_KEY: apiKey,
+    MODE: parseMode(raw.MODE),
   };
 }
 
