@@ -2,76 +2,91 @@
 
 ## Status
 
-**Protocol defined; benchmark results pending detector binding and execution.**
+**Candidate detector implemented and unit-tested; synthetic decision-layer benchmark plumbing executed. Real telemetry benchmark and calibration remain open.**
 
-This document establishes the reproducibility contract for Driftwatch issue #7. It does not claim detector effectiveness and does not contain benchmark results.
+This document records the reproducibility contract and the 2026-09-06 synthetic execution for Driftwatch issue #7. The execution is deliberately not promoted to detector-effectiveness evidence.
 
 ## Evidence boundary
 
-A unit test or UI demonstration is not detector-effectiveness evidence. A benchmark result is valid only when the exact implementation commit, frozen fixture, detector configuration, and machine-readable output are retained together.
+A unit test or UI demonstration is not detector-effectiveness evidence. The retained execution used a fixture that is explicitly marked `synthetic-fixture-only` and provides already-computed scalar signals that are intentionally separable around a predeclared threshold. Therefore the result validates benchmark plumbing and decision semantics only.
+
+The multivariate normalized-change statistic implemented in `src/detector/changeDetector.ts` still requires a separately frozen telemetry corpus to evaluate real detector behavior.
+
+## Implemented candidate detector
+
+The candidate baseline follows `docs/DRIFT_SIGNAL_SPEC.md`:
+
+`z_t = (x_t - μ) / max(|σ|, ε)`
+
+`D_t = ||z_t||_2 / sqrt(d)`
+
+The decision layer declares drift only when the score is strictly greater than the configured threshold for the configured number of consecutive observations. Equality with the threshold is not an exceedance.
+
+Detector identity for the executed lane:
+
+- name: `transparent-normalized-change`
+- version: `0.1.0`
 
 ## Frozen fixture
 
-The canonical fixture is `docs/fixtures/detector-benchmark-v1.json`.
+Canonical fixture: `docs/fixtures/detector-benchmark-v1.json`
 
-The fixture contains labeled `baseline` and `drift` cases. Labels are fixed before execution and must not be changed to improve results.
+SHA-256:
 
-## Required run metadata
+`78d006f891df282eb90c76df1285868994561e6c28bc096ea5e39f21d2d2f543`
 
-Every benchmark execution must record:
+The fixture contains 5 labeled baseline cases and 5 labeled drift cases. It remains explicitly synthetic and is not a telemetry dataset.
 
-- implementation commit SHA;
-- fixture filename and SHA-256;
-- detector name/version;
-- detector signal definition;
-- threshold(s) and whether they were configured before execution;
-- execution timestamp;
-- runtime/version information;
-- per-case prediction;
-- false positives and false negatives;
-- aggregate counts and rates;
-- failure/error analysis.
+## Executed synthetic run
 
-## Decision rule
+- GitHub Actions run: `34026139237`
+- executed implementation commit: `8a67defaa69a452ea11448255ac44d3511640686`
+- CI artifact ID: `9987108457`
+- CI artifact digest: `sha256:ad9f51d762dea886d64fabdf932da6dc84e4e7dbe442354e991be390e86d6520`
+- retained result: `artifacts/detector-benchmark-v1-run-34026139237.json`
+- retained result file SHA-256: `ce405bb3fe91627b1951693221a119569d84f89d447d50fde5f9267a9b590b23`
+- configuration: threshold `0.5`, persistence `1`
+- threshold status: **UNCALIBRATED**
 
-The benchmark must report raw counts before rates. Rates are:
+Exact-head CI passed on Node 20.x and Node 22.x. Both lanes passed clean install, high/critical dependency audit, TypeScript checking, detector unit tests, and production build. The Node 22 lane additionally generated and uploaded the benchmark artifact.
 
-- false-positive rate = false positives / negative cases;
-- false-negative rate = false negatives / positive cases.
+## Synthetic result
 
-No acceptance threshold is defined by this protocol until the detector's signal semantics and intended operating point are documented. This prevents calibration from being selected after observing the benchmark outcomes.
+| Measure | Result |
+|---|---:|
+| Negative cases | 5 |
+| Positive cases | 5 |
+| False positives | 0 |
+| False negatives | 0 |
+| False-positive rate | 0 |
+| False-negative rate | 0 |
+
+These zero-error values are **not evidence of real detector accuracy**. The fixture was constructed with baseline scalar signals from `0.10` to `0.45` and drift scalar signals from `0.60` to `0.95`, while the predeclared synthetic boundary is `0.5`. It is therefore a plumbing/semantics control rather than a challenging effectiveness benchmark.
 
 ## Calibration rule
 
-If a numeric threshold is required, calibration must use a separately identified calibration split. The benchmark fixture must remain untouched during threshold selection.
+Calibration requires a separately identified calibration dataset or split. The retained synthetic run reports `uncalibrated`; the threshold must not be described as a Driftwatch production default.
 
-If no separate calibration dataset exists, the run must explicitly report **threshold uncalibrated** rather than silently fitting the threshold to the benchmark.
+## Evidence progression
 
-## Required artifact
+Current supportable state:
 
-A completed run should produce `benchmark-result.json` with this minimum structure:
+`SPECIFIED → IMPLEMENTED → UNIT-TESTED → SYNTHETIC-PLUMBING-EXECUTED`
 
-```json
-{
-  "protocol": "detector-benchmark-v1",
-  "implementation_commit": "<sha>",
-  "fixture_sha256": "<sha256>",
-  "detector": {"name": "<name>", "version": "<version>"},
-  "configuration": {"signal": "<definition>", "threshold": null},
-  "cases": [],
-  "summary": {
-    "negative_cases": 0,
-    "positive_cases": 0,
-    "false_positives": 0,
-    "false_negatives": 0,
-    "false_positive_rate": null,
-    "false_negative_rate": null
-  },
-  "calibration": {"status": "uncalibrated", "dataset": null},
-  "limitations": []
-}
-```
+Not yet supportable:
 
-## Closure gate
+`REAL-TELEMETRY-BENCHMARKED → CALIBRATED → REPLICATED`
 
-Issue #7 remains open until the repository contains an executed result generated from this fixture (or a documented replacement fixture with provenance), plus detector binding, threshold provenance, and error analysis.
+## Remaining closure gate
+
+Issue #7 should remain open for detector-effectiveness evidence until all of the following exist:
+
+1. a frozen representative telemetry corpus with provenance;
+2. ground-truth perturbation labels produced independently of the detector;
+3. a separate calibration procedure/split if a numeric operating threshold is selected;
+4. execution of the multivariate score over that corpus;
+5. precision, recall, F1, false-positive behavior, detection latency, recovery latency, and perturbation-stratified error analysis;
+6. comparison against at least one simpler control under the same corpus and operating conditions;
+7. replication or independent rerun evidence before stronger reliability claims.
+
+The 2026-09-06 synthetic execution closes the benchmark **plumbing** gate, not the detector **efficacy** gate.
