@@ -34,5 +34,22 @@ jobs:
       - name: Run TypeScript type check
         run: npm run lint
 
+      - name: Run detector unit tests
+        run: npm run test:detector
+
       - name: Build application
         run: npm run build
+
+      - name: Generate synthetic benchmark evidence
+        if: matrix.node-version == '22.x'
+        run: npm run benchmark:detector
+        env:
+          BENCHMARK_IMPLEMENTATION_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Upload synthetic benchmark evidence
+        if: matrix.node-version == '22.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: detector-benchmark-v1
+          path: artifacts/benchmark-result.json
+          if-no-files-found: error
