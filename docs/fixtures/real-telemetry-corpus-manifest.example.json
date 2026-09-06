@@ -1,0 +1,43 @@
+{
+  "schema": "driftwatch.real-telemetry-corpus.v1",
+  "corpusId": "example-not-for-benchmarking",
+  "status": "schema-example-only",
+  "provenance": {
+    "sourceDescription": "Illustrative manifest structure only. No representative telemetry is contained or claimed.",
+    "collectedAt": "1970-01-01T00:00:00Z",
+    "collector": "schema-example"
+  },
+  "dimensions": ["dimension_a", "dimension_b"],
+  "cases": [
+    {
+      "id": "example-calibration-baseline",
+      "split": "calibration",
+      "label": "baseline",
+      "labelSource": "illustrative-schema-label",
+      "detectorIndependentLabel": true
+    },
+    {
+      "id": "example-calibration-drift",
+      "split": "calibration",
+      "label": "drift",
+      "labelSource": "illustrative-schema-label",
+      "detectorIndependentLabel": true,
+      "perturbationType": "illustrative-only"
+    },
+    {
+      "id": "example-evaluation-baseline",
+      "split": "evaluation",
+      "label": "baseline",
+      "labelSource": "illustrative-schema-label",
+      "detectorIndependentLabel": true
+    },
+    {
+      "id": "example-evaluation-drift",
+      "split": "evaluation",
+      "label": "drift",
+      "labelSource": "illustrative-schema-label",
+      "detectorIndependentLabel": true,
+      "perturbationType": "illustrative-only"
+    }
+  ]
+}
