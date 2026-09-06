@@ -12,6 +12,8 @@
  *   trace.error({ error, context })
  */
 
+import { env } from './env';
+
 export type TraceLevel = 'debug' | 'info' | 'warn' | 'error';
 
 export type TraceEventType =
@@ -43,7 +45,7 @@ export interface TraceEvent {
 
 let _seq = 0;
 let _currentTraceId = generateTraceId();
-const _isDev = import.meta.env.MODE !== 'production';
+const _isDev = env.MODE !== 'production';
 
 /** In-memory ring buffer — last 500 events, useful for debug panels */
 const _buffer: TraceEvent[] = [];
