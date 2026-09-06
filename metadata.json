@@ -1,6 +1,5 @@
 {
   "name": "Driftwatch",
   "description": "A high-fidelity multi-agent reasoning visualization and benchmarking dashboard featuring Agent Herald as host.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "requestFramePermissions": []
 }
