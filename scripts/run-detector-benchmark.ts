@@ -3,9 +3,21 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import process from 'node:process';
 import { detectScoreSeries, DETECTOR_NAME, DETECTOR_VERSION } from '../src/detector/changeDetector';
 
+interface FixtureCase {
+  id: string;
+  class: string;
+  signal: number;
+  expected_drift: boolean;
+}
+
+interface ResultCase extends FixtureCase {
+  predicted_drift: boolean;
+  correct: boolean;
+}
+
 const fixturePath = new URL('../docs/fixtures/detector-benchmark-v1.json', import.meta.url);
 const fixtureBytes = await readFile(fixturePath);
-const fixture = JSON.parse(fixtureBytes.toString('utf8'));
+const fixture = JSON.parse(fixtureBytes.toString('utf8')) as { protocol: string; status: string; cases: FixtureCase[] };
 const implementationCommit = process.env.BENCHMARK_IMPLEMENTATION_COMMIT;
 if (!implementationCommit || !/^[a-f0-9]{40}$/.test(implementationCommit)) {
   throw new Error('BENCHMARK_IMPLEMENTATION_COMMIT must be an exact 40-character Git SHA.');
@@ -15,21 +27,18 @@ if (!implementationCommit || !/^[a-f0-9]{40}$/.test(implementationCommit)) {
 // It is intentionally reported as uncalibrated and MUST NOT be promoted to a
 // validated operating threshold for real Driftwatch telemetry.
 const configuration = Object.freeze({ threshold: 0.5, persistence: 1 });
-const detections = detectScoreSeries(fixture.cases.map((item: { signal: number }) => item.signal), configuration);
+const detections = detectScoreSeries(fixture.cases.map((item) => item.signal), configuration);
 
-const cases = fixture.cases.map((item: { id: string; class: string; signal: number; expected_drift: boolean }, index: number) => ({
-  id: item.id,
-  class: item.class,
-  signal: item.signal,
-  expected_drift: item.expected_drift,
+const cases: ResultCase[] = fixture.cases.map((item, index) => ({
+  ...item,
   predicted_drift: detections[index].drift,
   correct: detections[index].drift === item.expected_drift,
 }));
 
-const negatives = cases.filter((item) => !item.expected_drift);
-const positives = cases.filter((item) => item.expected_drift);
-const falsePositives = negatives.filter((item) => item.predicted_drift).length;
-const falseNegatives = positives.filter((item) => !item.predicted_drift).length;
+const negatives = cases.filter((item: ResultCase) => !item.expected_drift);
+const positives = cases.filter((item: ResultCase) => item.expected_drift);
+const falsePositives = negatives.filter((item: ResultCase) => item.predicted_drift).length;
+const falseNegatives = positives.filter((item: ResultCase) => !item.predicted_drift).length;
 
 const result = {
   protocol: fixture.protocol,
