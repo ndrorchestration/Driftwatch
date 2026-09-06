@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test:detector": "tsx --test tests/detector.test.ts",
+    "benchmark:detector": "tsx scripts/run-detector-benchmark.ts"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
