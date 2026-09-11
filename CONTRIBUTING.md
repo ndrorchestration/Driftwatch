@@ -1,37 +1,53 @@
 # Contributing to Driftwatch
 
-## Governance
+## Authority and evidence boundary
 
-Driftwatch is part of the **PhiLattice / PDMAL** ecosystem, meta-orchestrated by **Agent Amethyst** and governed under the [DGAF Framework](https://github.com/ndrorchestration/DGAF-Framework).
+Driftwatch is an **independent experimental drift-detection/evaluation repository**. Current authority comes from repository-local source, tests, CI/benchmark artifacts, dated runtime evidence where available, and explicit maintainer decisions.
 
-## What Driftwatch Is
+Historical references to DGAF, PDMAL, Agent Amethyst, COLLEEN, phi-calculus, or harmonic-state terminology describe project lineage, integration context, or research vocabulary. They do not confer autonomous governance, certification, detector effectiveness, mathematical validity, or cross-repository validation.
 
-A phi-driven multi-agent synthesis simulation featuring:
-- Real-time semantic drift detection
-- Truth scoring via harmonic state monitoring
-- Phi-calculus grounded signal chain validation
-- Savage Reason (>10 Hz) detection and halt protocol
+`DGAF` means **Dynamic Governance Agentic Formation** in this ecosystem. `DGAF-Framework` is a related but separate research track and does not automatically govern or validate Driftwatch by reference.
 
-## Attribution & Standards
+## What Driftwatch is
 
-- **DGAF (Dynamic Governance Assurance Framework)** — orchestration governance
-- **Phi-Calculus / Metallic Mean Recursive Optimization** — stability substrate
-- **OpenTelemetry OTel v1.41.0+** — observability
-- **NIST AI RMF** — risk management alignment
+Driftwatch explores, where implemented and tested:
 
-## IP Notice
+- semantic/output drift detection;
+- agent-state and workflow monitoring;
+- evaluation/scoring experiments;
+- telemetry-corpus contract validation;
+- synthetic detector benchmarking;
+- drift-trajectory visualization and integration hooks.
 
-Core phi constants, frequency tuning tables, and constraint optimization algorithms are **not included** in this repository. Architecture and simulation logic only.
+Project terms such as harmonic state, phi-calculus, or historical threshold values are not general guarantees. A benchmark pass establishes only the tested benchmark conditions.
 
-## How to Contribute
+## Contribution rules
 
-1. Open an issue with a clear problem statement
-2. Fork and create a feature branch from `main`
-3. Ensure all drift detection changes include unit test coverage
-4. Submit a PR linking to the relevant DGAF pattern from the [NDR Pattern Registry](https://github.com/ndrorchestration/DGAF-Framework/blob/main/docs/governance/ndr-pattern-registry-v3.md)
+1. Open an issue with a clear problem statement or evidence gap.
+2. Create a branch from current `main`.
+3. Add or update unit tests for detector behavior changes.
+4. Preserve the distinction between synthetic benchmark evidence and real-world detector efficacy.
+5. Treat numeric thresholds as parameters unless the contribution includes reproducible calibration evidence.
+6. Do not expose shared/production credentials through browser-visible `VITE_` variables.
+7. For external-framework or cross-repository references, state whether they are mappings, dependencies, provenance, or actual verified integrations.
+8. A DGAF/NDR pattern link is optional context, not an approval requirement or transferred governance predicate.
 
-## Cross-References
+## External/reference boundaries
 
-- [DGAF-Framework](https://github.com/ndrorchestration/DGAF-Framework) — NDR pattern registry & governance protocols
-- [ai-governance-frameworks](https://github.com/ndrorchestration/ai-governance-frameworks) — Index 11 stability gradient
-- [sentinel-governance](https://github.com/ndrorchestration/sentinel-governance) — CI/CD integrity monitoring
+- **DGAF — Dynamic Governance Agentic Formation:** separate governance/evaluation research track.
+- **NIST AI RMF:** external risk-management framework; references/mappings do not establish NIST endorsement or compliance.
+- **OpenTelemetry:** observability technology where actually configured; a version/reference does not prove live telemetry.
+- **Phi/harmonic constructs:** project-local research vocabulary unless a narrower mathematical or empirical claim is independently established.
+
+## IP notice
+
+Project-specific constants, tuning tables, or optimization details may be intentionally omitted from public artifacts. Missing proprietary detail must not be replaced by unsupported capability claims.
+
+## Related repositories
+
+- [DGAF-Framework](https://github.com/ndrorchestration/DGAF-Framework) — separate governance/evaluation research track
+- [ai-governance-frameworks](https://github.com/ndrorchestration/ai-governance-frameworks) — separate governance-mapping research
+- [sentinel-governance](https://github.com/ndrorchestration/sentinel-governance) — separate historical/guardrail track
+- [Orbit-Driftwatch](https://github.com/ndrorchestration/Orbit-Driftwatch) — separate portfolio/showcase evidence chain
+
+Cross-repository references do not transfer validation.

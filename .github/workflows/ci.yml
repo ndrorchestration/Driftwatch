@@ -59,3 +59,55 @@ jobs:
           name: detector-benchmark-v1
           path: artifacts/benchmark-result.json
           if-no-files-found: error
+
+  evidence-boundary:
+    name: Evidence Boundary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify current-facing governance and contribution boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          required = {
+              Path('README.md'): (
+                  'Epistemic status:',
+                  'Cross-repository lineage or integration does not transfer validation.',
+              ),
+              Path('GOVERNANCE.md'): (
+                  '## Current authority',
+                  'historical provenance only',
+                  'Orbit-Driftwatch',
+              ),
+              Path('CONTRIBUTING.md'): (
+                  '## Authority and evidence boundary',
+                  'Dynamic Governance Agentic Formation',
+                  'Cross-repository references do not transfer validation.',
+              ),
+          }
+          for path, markers in required.items():
+              text = path.read_text(encoding='utf-8')
+              for marker in markers:
+                  if marker not in text:
+                      raise SystemExit(f'missing evidence-boundary marker {marker!r} in {path}')
+
+          banned = (
+              'Governing agent:',
+              'meta-orchestrated by **Agent Amethyst**',
+              'Dynamic Governance Assurance Framework',
+              'Fibonacci Phi-Closure Gate (BLOCKING)',
+              'NDR-133 Personal Document Firewall (BLOCKING-ABSOLUTE)',
+          )
+          for path in (Path('GOVERNANCE.md'), Path('CONTRIBUTING.md')):
+              text = path.read_text(encoding='utf-8')
+              for token in banned:
+                  if token in text:
+                      raise SystemExit(f'stale current-facing claim {token!r} in {path}')
+
+          print('DRIFTWATCH_EVIDENCE_BOUNDARY_PASS')
+          PY
